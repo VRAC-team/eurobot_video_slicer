@@ -2,6 +2,7 @@ import openpyxl
 import youtube_dl
 import os
 import sys
+import pathvalidate
 
 args = sys.argv
 
@@ -29,18 +30,20 @@ def youtubedl_hooks(res):
 			timestamp_end = current_sheet.cell(row_index, 2).value
 			team_yellow = current_sheet.cell(row_index, 3).value
 			team_blue = current_sheet.cell(row_index, 4).value
-			team_yellow_score = current_sheet.cell(row_index, 5).value
-			team_blue_score = current_sheet.cell(row_index, 6).value
+			team_yellow_score = int(current_sheet.cell(row_index, 5).value or 0)
+			team_blue_score = int(current_sheet.cell(row_index, 6).value or 0)
 			sheet_title = current_sheet.title
-			output_filename = "{}/{}({}) - {}({}).mp4".format(sheet_title, team_blue, team_blue_score, team_yellow, team_yellow_score)
+			output_filename = "{}({}) - {}({}).mp4".format(team_blue, team_blue_score, team_yellow, team_yellow_score)
+			output_filename = pathvalidate.sanitize_filename(output_filename)
+			output_path = "{}/{}".format(sheet_title, output_filename)
 
 			os.makedirs(sheet_title, exist_ok=True) #create dir with sheet title
 			
 			if timestamp_start and timestamp_end:
 				print("{}({}) - {}({} / {} {})".format(team_blue, team_blue_score, team_yellow, team_yellow_score, timestamp_start, timestamp_end))
-				print("output_filename:{}".format(output_filename))
+				print("output_path:{}".format(output_path))
 
-				os.system('ffmpeg -ss {} -to {} -i "{}" {} "{}"'.format(timestamp_start, timestamp_end, res['filename'], codec_copy, output_filename))
+				os.system('ffmpeg -ss {} -to {} -i "{}" {} "{}" -n'.format(timestamp_start, timestamp_end, res['filename'], codec_copy, output_path))
 
 ydl_opts = {
 	'nooverwrites': 'True',
