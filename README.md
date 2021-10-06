@@ -6,7 +6,7 @@ extract timestamps, teams, scores, and video link from a xlsx -> download the vi
 
 ```
 sudo apt install python3 python3-pip ffmpeg
-pip3 install openpyxl youtube_dl pathvalidate
+pip3 install openpyxl yt-dlp pathvalidate
 ```
 
 ## EXECUTE

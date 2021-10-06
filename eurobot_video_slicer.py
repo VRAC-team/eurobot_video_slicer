@@ -1,5 +1,5 @@
 import openpyxl
-import youtube_dl
+import yt_dlp
 import os
 import sys
 import pathvalidate
@@ -50,7 +50,7 @@ ydl_opts = {
 	'format': 'best',
 	'progress_hooks': [youtubedl_hooks]
 }
-with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+with yt_dlp.YoutubeDL(ydl_opts) as ydl:
 	for sheet in wb.worksheets:
 		current_sheet = sheet
 		link = sheet.cell(2, 8).value
